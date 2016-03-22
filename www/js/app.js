@@ -1,5 +1,43 @@
 angular.module('App', ['ionic'])
 
+///// WEATHER SERVICE FACTORY (Dr. B Code///////////////////////////////////////
+.factory('weatherService',['$http', function($http){
+  
+  //create service object
+  var weatherService = {};
+  
+    //get current rest conditions
+  weatherService.getWeather = function(){
+    return $http.get('https://ionic-in-action-api.herokuapp.com/weather');
+  };
+
+  return weatherService;
+
+}])
+.factory("localStorageService", function($window, $rootScope) {
+    
+    angular.element($window).on('storage', function(event) {
+        if (event.key === 'current-weather') {
+            $rootScope.$apply();
+        }
+    });    
+    
+    return {
+        setData: function(val) {
+            $window.localStorage && $window.localStorage.setItem('current-weather', val);
+            return this;
+        },
+        getData: function() {
+            
+            var val = $window.localStorage && $window.localStorage.getItem('current-weather');
+            
+            var data = angular.fromJson(val);
+            
+            return data; 
+        }
+    };
+})
+
 .config(function ($stateProvider, $urlRouterProvider) {
 
   $stateProvider
@@ -21,6 +59,11 @@ angular.module('App', ['ionic'])
       url: '/restaurants',
       controller: 'RestaurantsController',
       templateUrl: 'views/restaurants/restaurants.html'
+    })
+    .state('directions', {
+      url: '/directionss',
+      controller: 'DirectionsController',
+      templateUrl: 'views/directions/directions.html'
     })
     .state('tour', {
       url: '/tour',
